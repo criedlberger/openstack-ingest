@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="jclouds" default="compile">
+
+<property file="build.properties"/>
+
+<property name="lib" value="lib" />
+<property name="src" location="sers" /> 
+<property name="dest" location="test" /> 
+<property name="xml" value=".xml" /> 
+
+<buildnumber/>
+
+<path id="build.classpath">
+	<fileset dir="lib">
+		<include name="**/*.jar"/>
+	</fileset>
+	<pathelement location="build/classes" />
+	<pathelement location="src" />
+</path>
+
+<target name="init">
+	<mkdir dir="build/classes"/>
+</target>
+
+<target name="compile" depends="init">
+	<javac srcdir="src" destdir="build/classes">
+		<classpath refid="build.classpath"/>
+	</javac>
+</target>
+
+<target name="declare-cihm" depends="compile">
+	<echo>build.classpath=${toString:build.classpath}</echo>
+	<taskdef name="copy-cihm" classname="ca.ualberta.library.openstack.CihmMigrate" classpath="**/*.jar" classpathref="build.classpath"/>
+</target>
+
+<target name="copy-cihm" depends="declare-cihm">
+	<copy-cihm directory="test"/>
+</target>
+  
+<target name="clean" depends="init">
+	<delete dir="build"/>
+	<delete dir="dist"/>
+</target>
+
+<target name="migrate-cihm" description="Migrate CIHM files to OpenStack">
+	<java classname="ca.ualberta.library.openstack.CihmMigrateOS" classpathref="build.classpath">
+		<sysproperty key="logname" value="${migrate.log}"/>
+	</java>
+</target>	
+
+<target name="migrate-steele" description="Migrate Steele files to OpenStack">
+	<java classname="ca.ualberta.library.openstack.SteeleMigrate" classpathref="build.classpath">
+		<sysproperty key="logname" value="logs/steele-migrate.log"/>
+	</java>
+</target>	
+
+<target name="migrate-era" description="Migrate ERA files to OpenStack">
+	<java classname="ca.ualberta.library.openstack.ERAMigrate" classpathref="build.classpath">
+		<sysproperty key="logname" value="logs/era-migrate.log"/>
+	</java>
+</target>	
+
+<target name="add" description="Add new ERA files to OpenStack">
+	<java classname="ca.ualberta.library.openstack.ERAAdd" classpathref="build.classpath">
+		<sysproperty key="logname" value="logs/era-add.log"/>
+	</java>
+</target>
+
+<target name="modify" description="Add modified ERA files to OpenStack">
+	<java classname="ca.ualberta.library.openstack.ERAModify" classpathref="build.classpath">
+		<sysproperty key="logname" value="logs/era-modify-fix.log"/>
+	</java>
+</target>
+
+<target name="add-update" description="Add new ERA files to OpenStack">
+	<java classname="ca.ualberta.library.openstack.ERAAddUpdate" classpathref="build.classpath">
+		<sysproperty key="logname" value="logs/era-add-update.log"/>
+	</java>
+</target>
+
+<target name="era-copy" description="Copy files in OpenStack">
+	<java classname="ca.ualberta.library.openstack.ERACopy" classpathref="build.classpath">
+		<sysproperty key="logname" value="logs/era-copy.log"/>
+	</java>
+</target>
+
+<target name="era-info" description="Get info on files in OpenStack">
+	<java classname="ca.ualberta.library.openstack.ERAInfo" classpathref="build.classpath">
+		<sysproperty key="logname" value="logs/era-info.log"/>
+	</java>
+</target>
+
+<target name="era-search" description="Seacr tar files in pseudoHoneycomb">
+	<java classname="ca.ualberta.library.openstack.ERATarSearch" classpathref="build.classpath">
+		<sysproperty key="logname" value="logs/era-search.log"/>
+	</java>
+</target>
+
+<target name="jclouds" description="Seacr tar files in pseudoHoneycomb">
+	<java classname="ca.ualberta.library.openstack.JCloudTest" classpathref="build.classpath">
+		<sysproperty key="logname" value="logs/jcloud.log"/>
+	</java>
+</target>
+
+</project>
+	
